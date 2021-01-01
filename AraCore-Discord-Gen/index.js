@@ -166,7 +166,29 @@ bot.on("message", message => {
                 };
                 message.channel.send({ embed });
             }
-        
+         if(command === "stock"){
+        let stock = []
+
+        fs.readdir(__dirname, function (err, files) {
+            if (err) {
+                return console.log('Unable to scan directory: ' + err);
+            } 
+
+            files.forEach(function (file) {
+                if (!file.includes(".json")) return
+                if (file.includes('package-lock') || file.includes('package.json') || file.includes('settings.json')) return
+                stock.push(file) 
+            });
+            console.log(stock)
+
+            stock.forEach(async function (data) {
+                let acc = await fs.readFileSync(__dirname + "/" + data)
+                message.channel.send(data.replace(".json","")+" has "+JSON.parse(acc).length+" accounts\n")
+
+            })
+
+        });
+    }
             if (command === "help") {
 
                 const embed = {
@@ -285,29 +307,6 @@ bot.on("message", message => {
                 message.channel.send({ embed });
             });
         }
-    if(command === "stock"){
-        let stock = []
-
-        fs.readdir(__dirname, function (err, files) {
-            if (err) {
-                return console.log('Unable to scan directory: ' + err);
-            } 
-
-            files.forEach(function (file) {
-                if (!file.includes(".json")) return
-                if (file.includes('package-lock') || file.includes('package.json') || file.includes('settings.json')) return
-                stock.push(file) 
-            });
-            console.log(stock)
-
-            stock.forEach(async function (data) {
-                let acc = await fs.readFileSync(__dirname + "/" + data)
-                message.channel.send(data.replace(".json","")+" has "+JSON.parse(acc).length+" accounts\n")
-
-            })
-
-        });
-    }
         if (command === "restock") {
             const embed = {
                 title: "Provide Service!",
